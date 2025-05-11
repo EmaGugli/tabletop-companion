@@ -3,17 +3,20 @@ import Character from '../models/Character';
 
 export const createCharacter = async (req: Request, res: Response) => {
   try {
-    const { name, race, class: characterClass, level, attributes, background } = req.body;
     const userId = (req as any).user.id;
+    const {
+      name,
+      class: characterClass,
+      level,
+      ...rest
+    } = req.body;
 
     const character = await Character.create({
       name,
-      race,
       class: characterClass,
       level,
-      attributes,
-      background,
-      userId
+      userId,
+      details: rest
     });
 
     res.status(201).json({
@@ -34,7 +37,14 @@ export const getCharacters = async (req: Request, res: Response) => {
       order: [['createdAt', 'DESC']]
     });
 
-    res.json(characters);
+    // Transform the characters to include details as top-level properties
+    const transformedCharacters = characters.map(char => ({
+      ...char.toJSON(),
+      ...char.details,
+      details: undefined // Remove the details field
+    }));
+
+    res.json(transformedCharacters);
   } catch (error) {
     console.error('Get characters error:', error);
     res.status(500).json({ message: 'Error fetching characters' });
@@ -54,7 +64,14 @@ export const getCharacter = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Character not found' });
     }
 
-    res.json(character);
+    // Transform the character to include details as top-level properties
+    const transformedCharacter = {
+      ...character.toJSON(),
+      ...character.details,
+      details: undefined // Remove the details field
+    };
+
+    res.json(transformedCharacter);
   } catch (error) {
     console.error('Get character error:', error);
     res.status(500).json({ message: 'Error fetching character' });
@@ -65,7 +82,12 @@ export const updateCharacter = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userId = (req as any).user.id;
-    const updateData = req.body;
+    const {
+      name,
+      class: characterClass,
+      level,
+      ...rest
+    } = req.body;
 
     const character = await Character.findOne({
       where: { id, userId }
@@ -75,7 +97,12 @@ export const updateCharacter = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Character not found' });
     }
 
-    await character.update(updateData);
+    await character.update({
+      name,
+      class: characterClass,
+      level,
+      details: rest
+    });
 
     res.json({
       message: 'Character updated successfully',

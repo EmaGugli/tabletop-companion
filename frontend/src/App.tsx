@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CharacterSheet from './pages/CharacterSheet';
 import CharacterForm from './pages/CharacterForm';
+import CharacterView from './pages/CharacterView';
 import Navigation from './components/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -41,6 +42,14 @@ const App: React.FC = () => {
         />
         <Route 
           path="/character-sheet/:id" 
+          element={
+            <ProtectedRoute>
+              <CharacterView />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/character-sheet/:id/edit" 
           element={
             <ProtectedRoute>
               <CharacterForm />

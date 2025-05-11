@@ -31,7 +31,15 @@ const Dashboard: React.FC = () => {
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {characters.map(character => (
             <li key={character.id} style={{ marginBottom: '1rem' }}>
-              <Link to={`/character-sheet/${character.id}`}>
+              <Link to={`/character-sheet/${character.id}`} style={{ 
+                display: 'block',
+                padding: '1rem',
+                backgroundColor: 'white',
+                borderRadius: '4px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                textDecoration: 'none',
+                color: 'inherit'
+              }}>
                 {character.name} - Level {character.level} {character.class}
               </Link>
             </li>

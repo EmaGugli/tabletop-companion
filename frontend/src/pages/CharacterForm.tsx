@@ -1,48 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PDFDocument, PDFPage } from 'pdf-lib';
 import characterService, { Character } from '../services/characterService';
 
 const CharacterForm: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [pdfDoc, setPdfDoc] = useState<PDFDocument | null>(null);
   const [formData, setFormData] = useState<Partial<Character>>({
     name: '',
     class: '',
-    level: 1
+    level: 1,
+    background: '',
+    race: '',
+    alignment: '',
+    hitPoints: 1,
+    strength: 10,
+    dexterity: 10,
+    constitution: 10,
+    intelligence: 10,
+    wisdom: 10,
+    charisma: 10,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    loadPdfTemplate();
     if (id && id !== 'new') {
       loadCharacter();
-    }
-  }, [id]);
-
-  const loadPdfTemplate = async () => {
-    try {
-      // Load your PDF template
-      const pdfBytes = await fetch('/character-sheet-template.pdf').then(res => res.arrayBuffer());
-      const pdfDoc = await PDFDocument.load(pdfBytes);
-      setPdfDoc(pdfDoc);
-    } catch (err) {
-      setError('Failed to load PDF template');
-      console.error('Error loading PDF:', err);
-    } finally {
+    } else {
       setIsLoading(false);
     }
-  };
+  }, [id]);
 
   const loadCharacter = async () => {
     try {
       const character = await characterService.getCharacter(parseInt(id!));
       setFormData(character);
+      setError('');
     } catch (err) {
       setError('Failed to load character');
       console.error('Error loading character:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,6 +153,103 @@ const CharacterForm: React.FC = () => {
               border: '1px solid #ccc'
             }}
           />
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="background" style={{ display: 'block', marginBottom: '0.5rem' }}>Background</label>
+          <input
+            type="text"
+            id="background"
+            name="background"
+            value={formData.background}
+            onChange={handleChange}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="race" style={{ display: 'block', marginBottom: '0.5rem' }}>Race</label>
+          <input
+            type="text"
+            id="race"
+            name="race"
+            value={formData.race}
+            onChange={handleChange}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="alignment" style={{ display: 'block', marginBottom: '0.5rem' }}>Alignment</label>
+          <input
+            type="text"
+            id="alignment"
+            name="alignment"
+            value={formData.alignment}
+            onChange={handleChange}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="hitPoints" style={{ display: 'block', marginBottom: '0.5rem' }}>Hit Points</label>
+          <input
+            type="number"
+            id="hitPoints"
+            name="hitPoints"
+            value={formData.hitPoints}
+            onChange={handleChange}
+            min="1"
+            required
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '1rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+          <div>
+            <label htmlFor="strength">Strength</label>
+            <input type="number" id="strength" name="strength" value={formData.strength} onChange={handleChange} min="1" max="20" required style={{ width: '100%' }} />
+          </div>
+          <div>
+            <label htmlFor="dexterity">Dexterity</label>
+            <input type="number" id="dexterity" name="dexterity" value={formData.dexterity} onChange={handleChange} min="1" max="20" required style={{ width: '100%' }} />
+          </div>
+          <div>
+            <label htmlFor="constitution">Constitution</label>
+            <input type="number" id="constitution" name="constitution" value={formData.constitution} onChange={handleChange} min="1" max="20" required style={{ width: '100%' }} />
+          </div>
+          <div>
+            <label htmlFor="intelligence">Intelligence</label>
+            <input type="number" id="intelligence" name="intelligence" value={formData.intelligence} onChange={handleChange} min="1" max="20" required style={{ width: '100%' }} />
+          </div>
+          <div>
+            <label htmlFor="wisdom">Wisdom</label>
+            <input type="number" id="wisdom" name="wisdom" value={formData.wisdom} onChange={handleChange} min="1" max="20" required style={{ width: '100%' }} />
+          </div>
+          <div>
+            <label htmlFor="charisma">Charisma</label>
+            <input type="number" id="charisma" name="charisma" value={formData.charisma} onChange={handleChange} min="1" max="20" required style={{ width: '100%' }} />
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>

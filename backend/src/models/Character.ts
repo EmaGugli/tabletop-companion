@@ -8,13 +8,7 @@ class Character extends Model {
   public name!: string;
   public class!: string;
   public level!: number;
-  public strength!: number;
-  public dexterity!: number;
-  public constitution!: number;
-  public intelligence!: number;
-  public wisdom!: number;
-  public charisma!: number;
-  public hitPoints!: number;
+  public details!: any;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -47,33 +41,10 @@ Character.init(
       allowNull: false,
       defaultValue: 1,
     },
-    strength: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    dexterity: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    constitution: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    intelligence: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    wisdom: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    charisma: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    hitPoints: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    details: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: {},
     },
   },
   {

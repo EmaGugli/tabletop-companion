@@ -16,9 +16,13 @@ const CharacterSheet: React.FC = () => {
     try {
       const data = await characterService.getCharacters();
       setCharacters(data);
-    } catch (err) {
-      setError('Failed to load characters');
-      console.error('Error loading characters:', err);
+      setError('');
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        setError('Please log in to view your characters');
+      } else {
+        setError(err.response?.data?.message || 'Failed to load characters');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -29,7 +33,22 @@ const CharacterSheet: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>Loading characters...</div>;
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <div>Loading characters...</div>
+        {error && (
+          <div style={{ 
+            color: 'red', 
+            backgroundColor: '#ffebee', 
+            padding: '1rem', 
+            borderRadius: '4px',
+            marginTop: '1rem'
+          }}>
+            {error}
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -70,8 +89,29 @@ const CharacterSheet: React.FC = () => {
       )}
 
       {characters.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          No characters found. Create your first character!
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '2rem',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '8px',
+          marginTop: '1rem'
+        }}>
+          <h3 style={{ marginBottom: '1rem' }}>No Characters Found</h3>
+          <p style={{ marginBottom: '1.5rem' }}>Start your adventure by creating your first character!</p>
+          <button
+            onClick={handleCreateNew}
+            style={{
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '1rem'
+            }}
+          >
+            Create Your First Character
+          </button>
         </div>
       ) : (
         <table style={{ 
